@@ -1,0 +1,96 @@
+plugins {
+	id 'java'
+	id 'maven-publish'
+	id 'org.springframework.boot' version '3.5.8'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.gscien.testing'
+version = '1.0'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+java {
+	// Automatically creates a [project-name]-sources.jar
+	withSourcesJar()
+
+	// Automatically creates a [project-name]-javadoc.jar
+	withJavadocJar()
+}
+
+// This helps avoid common Javadoc warnings/errors during the build
+tasks.withType(Javadoc) {
+	options.addStringOption('Xdoclint:none', '-quiet')
+	options.encoding = 'UTF-8'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// mocking
+	implementation 'net.datafaker:datafaker:2.4.0'
+
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId = 'org.gscience.testing'
+			artifactId = 'testing'
+			version = '1.0'
+
+			from components.java
+
+			// Optional: Add Maven POM properties
+			pom {
+				name = 'Gsience testing library'
+				description = 'A brief description of my library'
+				url = 'https://github.com/your-username/your-repository'
+				licenses {
+					license {
+						name = 'MIT License'
+						url = 'https://opensource.org/licenses/MIT'
+					}
+				}
+				developers {
+					developer {
+						id = 'gerrits.marc@hotmail.com'
+						name = 'Gerrits Marc'
+						email = 'gerrits.marc@hotmail.com'
+					}
+				}
+			}
+		}
+	}
+}
